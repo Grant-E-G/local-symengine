@@ -42,10 +42,9 @@ impl Default for Expression {
         unsafe {
             let mut basic = std::mem::MaybeUninit::uninit();
             // Initialize the value properly
-            CRCPBasic_C_some_initialization_function(basic.as_mut_ptr());
+            basic_new_stack(basic.as_mut_ptr());
+            
             let mut basic = basic.assume_init();
-
-            basic_new_stack(&mut basic);
 
             Self {
                 basic: UnsafeCell::new(basic),
