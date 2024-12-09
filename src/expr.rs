@@ -43,8 +43,8 @@ impl Default for Expression {
             let mut basic = std::mem::MaybeUninit::uninit();
             // Initialize the value properly
             basic_new_stack(basic.as_mut_ptr());
-            
-            let mut basic = basic.assume_init();
+
+            let basic = basic.assume_init();
 
             Self {
                 basic: UnsafeCell::new(basic),
