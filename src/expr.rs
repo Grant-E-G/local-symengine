@@ -204,9 +204,7 @@ impl UnaryOp for Expression {
         F: FnOnce(*mut symengine_sys::basic_struct, *mut symengine_sys::basic_struct),
     {
         let out = Self::default();
-        unsafe {
-            op(out.basic.get(), self.basic.get());
-        }
+        op(out.basic.get(), self.basic.get());
         out
     }
 }
@@ -219,6 +217,18 @@ impl Expression {
     }
 }
 // end of exp code block
+//new methods
+impl Expression {
+    /// Computes the derivative of the expression with respect to `symbol`.
+    pub fn diff(&self, symbol: &Expression) -> Self {
+        let out = Self::default();
+        unsafe {
+            symengine_sys::basic_diff(out.basic.get(), self.basic.get(), symbol.basic.get());
+        }
+        out
+    }
+}
+//end of new methods
 
 #[cfg(feature = "serde")]
 impl Serialize for Expression {
