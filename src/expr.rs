@@ -189,6 +189,34 @@ impl PartialEq for Expression {
         lhs.cmp_eq_op(&rhs, basic_eq)
     }
 }
+// implimenting exp function
+
+pub trait UnaryOp {
+    /// Apply a unary operation to the expression.
+    fn unary_op<F>(self, op: F) -> Self
+    where
+        F: FnOnce(*mut symengine_sys::basic_struct, *mut symengine_sys::basic_struct);
+}
+
+impl UnaryOp for Expression {
+    fn unary_op<F>(self, op: F) -> Self
+    where
+        F: FnOnce(*mut symengine_sys::basic_struct, *mut symengine_sys::basic_struct),
+    {
+        let out = Self::default();
+        unsafe {
+            op(out.basic.get(), self.basic.get());
+        }
+        out
+    }
+}
+
+impl Expression {
+    pub fn exp(self) -> Self {
+        self.unary_op(symengine_sys::basic_exp)
+    }
+}
+// end of exp code block
 
 #[cfg(feature = "serde")]
 impl Serialize for Expression {
