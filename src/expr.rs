@@ -213,7 +213,9 @@ impl UnaryOp for Expression {
 
 impl Expression {
     pub fn exp(self) -> Self {
-        self.unary_op(symengine_sys::basic_exp)
+        self.unary_op(|out, input| unsafe {
+            symengine_sys::basic_exp(out, input);
+        })
     }
 }
 // end of exp code block
