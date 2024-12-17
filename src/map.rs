@@ -184,3 +184,11 @@ where
         Ok(map)
     }
 }
+impl<K> ExpressionMap<K>
+where
+    K: ExpressionMapKey,
+{
+    pub fn get_basic_ptr(&self) -> *mut CMapBasicBasic {
+        self.basic
+    }
+}

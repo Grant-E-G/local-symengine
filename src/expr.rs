@@ -7,6 +7,7 @@ use symengine_sys::*;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+use crate::map::{ExpressionMap, ExpressionMapKey};
 pub struct Expression {
     pub(crate) basic: UnsafeCell<basic_struct>,
 }
@@ -226,6 +227,35 @@ impl Expression {
             symengine_sys::basic_diff(out.basic.get(), self.basic.get(), symbol.basic.get());
         }
         out
+    }
+}
+impl Expression {
+    /// Substitute variables in the expression based on a map of substitutions.
+    pub fn subs<K>(&self, subs: &ExpressionMap<K>) -> Self
+    where
+        K: ExpressionMapKey,
+    {
+        let out = Self::default();
+        unsafe {
+            symengine_sys::basic_subs(out.basic.get(), self.basic.get(), subs.get_basic_ptr());
+        }
+        out
+    }
+}
+impl Expression {
+    /// Numerically evaluate the symbolic expression.
+    pub fn evalf(&self) -> Self {
+        let out = Self::default();
+        unsafe {
+            symengine_sys::basic_evalf(out.basic.get(), self.basic.get(), 53, 0);
+        }
+        out
+    }
+}
+impl Expression {
+    /// Convert the expression to a f64 value.
+    pub fn to_f64(&self) -> f64 {
+        unsafe { symengine_sys::real_double_get_d(self.basic.get()) }
     }
 }
 //end of new methods

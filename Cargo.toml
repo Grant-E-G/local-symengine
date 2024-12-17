@@ -37,3 +37,6 @@ version = "0.8"
 
 [features]
 default = ["serde"]
+
+[build]
+rustflags = ["-L", "/usr/local/lib"]
